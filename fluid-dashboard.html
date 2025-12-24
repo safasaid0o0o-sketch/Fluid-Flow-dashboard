@@ -1,0 +1,2244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Hydraulic Hustle — Complete Pump-Pipe Network System</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root {
+      --primary: #004e92;
+      --secondary: #0077c2;
+      --accent: #00b4d8;
+      --light: #f2faff;
+      --dark: #003a66;
+      --success: #28a745;
+      --warning: #ffc107;
+      --danger: #dc3545;
+    }
+    
+    body { 
+      font-family: "Poppins", Arial, sans-serif; 
+      margin:0; 
+      background:#f2faff;
+      color: #333;
+    }
+    
+    #sidebar { 
+      width:240px; 
+      background:var(--primary); 
+      color:white; 
+      position:fixed; 
+      top:0; 
+      left:0; 
+      bottom:0; 
+      padding:18px; 
+      box-shadow:4px 0 10px rgba(0,0,0,0.15);
+      z-index: 1000;
+    }
+    
+    #sidebar h2{ 
+      margin:0 0 20px 0; 
+      font-size:20px; 
+      color: white;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+    }
+    
+    #sidebar a { 
+      color:white; 
+      display:flex;
+      align-items: center;
+      gap: 10px;
+      padding:12px 10px; 
+      text-decoration:none; 
+      border-radius:6px; 
+      margin:6px 0; 
+      transition: all 0.3s ease;
+    }
+    
+    #sidebar a:hover { 
+      background: rgba(255,255,255,0.12); 
+      transform: translateX(5px);
+    }
+    
+    #content { 
+      margin-left:270px; 
+      padding:22px; 
+    }
+    
+    h1 { 
+      margin:0 0 8px 0; 
+      font-size:28px; 
+      color: var(--dark);
+    }
+    
+    .subtitle {
+      color: #666;
+      margin-bottom: 20px;
+      font-size: 16px;
+    }
+    
+    .kpi-container { 
+      display:flex; 
+      gap:14px; 
+      margin:18px 0 24px;
+      flex-wrap: wrap;
+    }
+    
+    .kpi { 
+      flex:1; 
+      min-width: 180px;
+      background:white; 
+      padding:16px; 
+      border-radius:12px; 
+      box-shadow:0 6px 18px rgba(0,0,0,0.06); 
+      text-align:center;
+      border-left: 4px solid var(--secondary);
+      transition: transform 0.3s ease;
+    }
+    
+    .kpi:hover {
+      transform: translateY(-5px);
+    }
+    
+    .kpi .title{ 
+      color:#666; 
+      font-size:14px; 
+      margin-bottom:8px; 
+      font-weight: 600;
+    }
+    
+    .kpi .value{ 
+      font-size:26px; 
+      color:var(--secondary); 
+      font-weight:700; 
+    }
+    
+    .kpi .unit {
+      font-size: 14px;
+      color: #888;
+      margin-left: 4px;
+    }
+    
+    .section { 
+      background:white; 
+      padding:20px; 
+      border-radius:12px; 
+      box-shadow:0 6px 18px rgba(0,0,0,0.06); 
+      margin-bottom:18px;
+    }
+    
+    .section h3 {
+      margin-top: 0;
+      color: var(--dark);
+      padding-bottom: 10px;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .section h3 i {
+      color: var(--accent);
+    }
+    
+    .input-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 15px;
+      margin-top: 15px;
+    }
+    
+    .input-group {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    label{ 
+      display:block; 
+      margin-top:8px; 
+      color:#333; 
+      font-weight:600; 
+      margin-bottom: 5px;
+    }
+    
+    input, select { 
+      width:100%; 
+      padding:12px; 
+      margin-top:6px; 
+      border-radius:8px; 
+      border:1px solid #d0d7df; 
+      font-size:15px; 
+      box-sizing:border-box;
+      transition: border 0.3s;
+    }
+    
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(0, 180, 216, 0.1);
+    }
+    
+    button { 
+      margin-top:12px; 
+      padding:12px 24px; 
+      background:var(--secondary); 
+      color:white; 
+      border:none; 
+      border-radius:8px; 
+      cursor:pointer; 
+      font-weight:600;
+      font-size: 16px;
+      transition: all 0.3s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    button:hover{ 
+      background:var(--dark); 
+      transform: translateY(-2px);
+    }
+    
+    .button-secondary {
+      background: #6c757d;
+    }
+    
+    .button-secondary:hover {
+      background: #545b62;
+    }
+    
+    .button-success {
+      background: var(--success);
+    }
+    
+    .button-success:hover {
+      background: #218838;
+    }
+    
+    .button-small {
+      padding: 6px 12px;
+      font-size: 14px;
+    }
+    
+    .calculated-value {
+      background-color: #f8f9fa;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #dee2e6;
+      font-weight: 600;
+      color: var(--secondary);
+      text-align: center;
+      margin-top: 6px;
+    }
+    
+    .velocity-range {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .velocity-range input {
+      flex: 1;
+    }
+    
+    pre { 
+      white-space:pre-wrap; 
+      margin:0; 
+      font-family:inherit;
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 8px;
+      border-left: 4px solid var(--accent);
+    }
+    
+    #threeContainer{ 
+      width:100%; 
+      height:420px; 
+      border-radius:12px; 
+      background:#e8f4ff; 
+      overflow:hidden; 
+    }
+    
+    canvas{ 
+      max-width:100%; 
+    }
+    
+    .comparison-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+    
+    .comparison-card {
+      background: white;
+      border-radius: 10px;
+      padding: 15px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      border: 1px solid #e9ecef;
+      transition: all 0.3s;
+    }
+    
+    .comparison-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+    }
+    
+    .comparison-card.selected {
+      border-color: var(--success);
+      border-width: 2px;
+      background-color: #f8fff9;
+    }
+    
+    .comparison-card h4 {
+      margin-top: 0;
+      color: var(--dark);
+      border-bottom: 1px solid #eee;
+      padding-bottom: 10px;
+    }
+    
+    .comparison-metrics {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    
+    .metric-item {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .metric-value {
+      font-weight: 700;
+      font-size: 18px;
+      color: var(--dark);
+    }
+    
+    .metric-label {
+      font-size: 12px;
+      color: #666;
+    }
+    
+    .recommendation {
+      background: linear-gradient(135deg, #e3f2fd, #f3e5f5);
+      border-radius: 10px;
+      padding: 20px;
+      margin-top: 20px;
+      border-left: 5px solid var(--success);
+    }
+    
+    .recommendation h4 {
+      margin-top: 0;
+      color: var(--dark);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .tradeoff-analysis {
+      background: #f8f9fa;
+      border-radius: 10px;
+      padding: 15px;
+      margin-top: 20px;
+    }
+    
+    .tradeoff-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid #dee2e6;
+    }
+    
+    .tradeoff-item:last-child {
+      border-bottom: none;
+    }
+    
+    .cost-breakdown {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 15px;
+      margin-top: 15px;
+    }
+    
+    .cost-item {
+      text-align: center;
+      padding: 15px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+    }
+    
+    .tabs {
+      display: flex;
+      border-bottom: 1px solid #dee2e6;
+      margin-bottom: 20px;
+    }
+    
+    .tab {
+      padding: 10px 20px;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      font-weight: 600;
+      color: #666;
+    }
+    
+    .tab.active {
+      color: var(--secondary);
+      border-bottom: 3px solid var(--secondary);
+    }
+    
+    .tab-content {
+      display: none;
+    }
+    
+    .tab-content.active {
+      display: block;
+    }
+    
+    @media (max-width: 880px){ 
+      #sidebar{
+        display:none;
+      } 
+      #content{
+        margin-left:18px;
+      } 
+      .kpi-container {
+        flex-direction: column;
+      }
+      .input-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    .status-indicator {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin-right: 8px;
+    }
+    
+    .status-good {
+      background-color: var(--success);
+    }
+    
+    .status-warning {
+      background-color: var(--warning);
+    }
+    
+    .status-bad {
+      background-color: var(--danger);
+    }
+    
+    .efficiency-meter {
+      height: 10px;
+      background: #e9ecef;
+      border-radius: 5px;
+      margin-top: 5px;
+      overflow: hidden;
+    }
+    
+    .efficiency-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--danger), var(--warning), var(--success));
+      border-radius: 5px;
+    }
+    
+    .notification {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--success);
+      color: white;
+      padding: 15px 20px;
+      border-radius: 8px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      display: none;
+      z-index: 10000;
+    }
+    
+    .fittings-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+    
+    .fittings-table th {
+      background-color: #f8f9fa;
+      padding: 10px;
+      text-align: left;
+      border-bottom: 2px solid #dee2e6;
+      font-weight: 600;
+    }
+    
+    .fittings-table td {
+      padding: 10px;
+      border-bottom: 1px solid #dee2e6;
+    }
+    
+    .fittings-table input {
+      margin: 0;
+      width: 80px;
+    }
+    
+    .fittings-controls {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+    }
+    
+    .fittings-summary {
+      background-color: #f8f9fa;
+      padding: 10px;
+      border-radius: 8px;
+      margin-top: 15px;
+    }
+    
+    .minor-losses-breakdown {
+      margin-top: 10px;
+      padding: 10px;
+      background-color: #f8f9fa;
+      border-radius: 8px;
+    }
+    
+    .loss-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 5px 0;
+    }
+    
+    .preset-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+    
+    .preset-button {
+      padding: 8px 15px;
+      background: #e9ecef;
+      border: 1px solid #ced4da;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.3s;
+    }
+    
+    .preset-button:hover {
+      background: #dee2e6;
+      transform: translateY(-2px);
+    }
+    
+    .preset-button.active {
+      background: var(--secondary);
+      color: white;
+      border-color: var(--secondary);
+    }
+    
+    .velocity-presets {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    
+    .velocity-preset {
+      flex: 1;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="sidebar">
+    <h2><i class="fas fa-water"></i> Hydraulic Hustle</h2>
+    <a href="#input"><i class="fas fa-sliders-h"></i> System Inputs</a>
+    <a href="#kpi"><i class="fas fa-chart-line"></i> Performance KPIs</a>
+    <a href="#comparison"><i class="fas fa-balance-scale"></i> Velocity Comparison</a>
+    <a href="#optimization"><i class="fas fa-cogs"></i> Optimization</a>
+    <a href="#3d"><i class="fas fa-cube"></i> 3D Visualization</a>
+    <a href="#charts"><i class="fas fa-chart-bar"></i> Analysis Charts</a>
+    <a href="#cost"><i class="fas fa-dollar-sign"></i> Cost Analysis</a>
+  </div>
+
+  <div id="content">
+    <h1>Pump-Pipe Network System Design</h1>
+    <div class="subtitle" id="subtitle">Industrial Fluid Transport System: 50 m³/h over 200m with 15m elevation</div>
+    
+    <div id="notification" class="notification">
+      <i class="fas fa-check-circle"></i> Calculations updated successfully!
+    </div>
+
+    <div id="kpi" class="kpi-container">
+      <div class="kpi">
+        <div class="title">Flow Velocity</div>
+        <div id="kpiVel" class="value">0.00<span class="unit"> m/s</span></div>
+      </div>
+      <div class="kpi">
+        <div class="title">Total Head Required</div>
+        <div id="kpiHead" class="value">0.00<span class="unit"> m</span></div>
+      </div>
+      <div class="kpi">
+        <div class="title">Pump Power</div>
+        <div id="kpiPower" class="value">0.00<span class="unit"> kW</span></div>
+      </div>
+      <div class="kpi">
+        <div class="title">Annual Energy Cost</div>
+        <div id="kpiEnergyCost" class="value">$0.00<span class="unit"> /year</span></div>
+      </div>
+      <div class="kpi">
+        <div class="title">Total System Cost</div>
+        <div id="kpiTotalCost" class="value">$0.00<span class="unit"></span></div>
+      </div>
+      <div class="kpi">
+        <div class="title">System Efficiency</div>
+        <div id="kpiEfficiency" class="value">0.00<span class="unit"> %</span></div>
+      </div>
+    </div>
+
+    <div id="input" class="section">
+      <h3><i class="fas fa-sliders-h"></i> System Design Parameters</h3>
+      
+      <div class="tabs">
+        <div class="tab active" onclick="switchTab('basic-tab')">Basic Parameters</div>
+        <div class="tab" onclick="switchTab('advanced-tab')">Advanced Parameters</div>
+        <div class="tab" onclick="switchTab('fittings-tab')">Fittings & Valves</div>
+        <div class="tab" onclick="switchTab('cost-tab')">Cost Parameters</div>
+      </div>
+      
+      <div id="basic-tab" class="tab-content active">
+        <div class="input-grid">
+          <div class="input-group">
+            <label for="targetVelocity"><i class="fas fa-tachometer-alt"></i> Target Velocity (m/s)</label>
+            <div class="velocity-range">
+              <input id="targetVelocity" type="number" step="0.1" value="2.0" min="0.1" max="10" />
+              <span style="color: #666;">1-3 m/s optimal range</span>
+            </div>
+            <div class="velocity-presets">
+              <button class="button-small velocity-preset" onclick="setTargetVelocity(1.0)">1.0 m/s</button>
+              <button class="button-small velocity-preset" onclick="setTargetVelocity(1.5)">1.5 m/s</button>
+              <button class="button-small velocity-preset" onclick="setTargetVelocity(2.0)">2.0 m/s</button>
+              <button class="button-small velocity-preset" onclick="setTargetVelocity(2.5)">2.5 m/s</button>
+              <button class="button-small velocity-preset" onclick="setTargetVelocity(3.0)">3.0 m/s</button>
+            </div>
+            <div class="efficiency-meter">
+              <div id="velocityEfficiency" class="efficiency-fill" style="width: 60%"></div>
+            </div>
+          </div>
+          
+          <div class="input-group">
+            <label for="flow"><i class="fas fa-tint"></i> Flow Rate (m³/hr)</label>
+            <input id="flow" type="number" value="50" min="0.1" max="10000" step="1" />
+            <small>Typical range: 1-1000 m³/h for industrial systems</small>
+          </div>
+          
+          <div class="input-group">
+            <label><i class="fas fa-circle"></i> Calculated Pipe Diameter</label>
+            <div id="calculatedDiameter" class="calculated-value">0.094 m (94 mm)</div>
+            <small>Calculated from flow rate and target velocity</small>
+          </div>
+          
+          <div class="input-group">
+            <label for="length"><i class="fas fa-ruler"></i> Pipe Length (m)</label>
+            <input id="length" type="number" value="200" min="1" max="100000" step="1" />
+            <small>Total length of pipeline including fittings</small>
+          </div>
+          
+          <div class="input-group">
+            <label for="elev"><i class="fas fa-mountain"></i> Elevation Gain (m)</label>
+            <input id="elev" type="number" value="15" min="0" max="5000" step="0.1" />
+            <small>Vertical height difference from pump to discharge</small>
+          </div>
+        </div>
+      </div>
+      
+      <div id="advanced-tab" class="tab-content">
+        <div class="input-grid">
+          <div class="input-group">
+            <label for="pipeMaterial"><i class="fas fa-cog"></i> Pipe Material</label>
+            <select id="pipeMaterial">
+              <option value="steel">Steel</option>
+              <option value="pvc">PVC</option>
+              <option value="castiron">Cast Iron</option>
+              <option value="concrete">Concrete</option>
+            </select>
+          </div>
+          
+          <div class="input-group">
+            <label for="viscosity"><i class="fas fa-tint"></i> Fluid Viscosity (Pa·s)</label>
+            <input id="viscosity" type="number" value="0.001" step="0.0001" min="0.0001" max="0.1" />
+            <small>Water at 20°C ≈ 0.001 Pa·s</small>
+          </div>
+          
+          <div class="input-group">
+            <label for="roughness"><i class="fas fa-mountain"></i> Pipe Roughness (mm)</label>
+            <input id="roughness" type="number" value="0.045" step="0.001" min="0.001" max="10" />
+            <small>Steel ≈ 0.045 mm, PVC ≈ 0.0015 mm</small>
+          </div>
+          
+          <div class="input-group">
+            <label for="ff"><i class="fas fa-fan"></i> Darcy Friction Factor</label>
+            <input id="ff" type="number" value="0.02" step="0.001" min="0.001" max="0.1" readonly style="background-color: #f8f9fa;" />
+            <small>Calculated based on flow regime</small>
+          </div>
+          
+          <div class="input-group">
+            <label for="eff"><i class="fas fa-bolt"></i> Pump Efficiency (%)</label>
+            <input id="eff" type="number" value="75" min="10" max="95" />
+            <div class="efficiency-meter">
+              <div id="pumpEfficiencyBar" class="efficiency-fill" style="width: 75%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div id="fittings-tab" class="tab-content">
+        <h4><i class="fas fa-compress-alt"></i> Pipe Fittings & Valves Configuration</h4>
+        <p>Add fittings and valves to calculate minor losses. Default K values are typical for standard fittings.</p>
+        
+        <table class="fittings-table">
+          <thead>
+            <tr>
+              <th>Fitting Type</th>
+              <th>Quantity</th>
+              <th>K Coefficient</th>
+              <th>Total K</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="fittingsTableBody">
+            <!-- Fittings will be added here dynamically -->
+          </tbody>
+        </table>
+        
+        <div class="fittings-controls">
+          <button id="addFittingBtn" class="button-small"><i class="fas fa-plus"></i> Add Fitting</button>
+          <button id="resetFittingsBtn" class="button-small button-secondary"><i class="fas fa-redo"></i> Reset to Defaults</button>
+        </div>
+        
+        <div class="fittings-summary">
+          <div class="input-group">
+            <label for="totalMinorK"><i class="fas fa-calculator"></i> Total Minor Losses Coefficient (ΣK)</label>
+            <input id="totalMinorK" type="number" value="2.5" step="0.1" min="0" max="50" readonly style="background-color: #f8f9fa; font-weight: bold;" />
+            <small>Sum of all fitting K values × quantities</small>
+          </div>
+        </div>
+        
+        <div class="minor-losses-breakdown" id="minorLossesBreakdown">
+          <h5><i class="fas fa-list"></i> Minor Losses Breakdown</h5>
+          <div id="lossesBreakdownContent">
+            Add fittings to see breakdown
+          </div>
+        </div>
+      </div>
+      
+      <div id="cost-tab" class="tab-content">
+        <div class="input-grid">
+          <div class="input-group">
+            <label for="pipecost"><i class="fas fa-dollar-sign"></i> Pipe Cost ($/m)</label>
+            <input id="pipecost" type="number" value="30" min="1" max="500" />
+            <small>Cost per meter of pipe</small>
+          </div>
+          
+          <div class="input-group">
+            <label for="pumpCost"><i class="fas fa-dollar-sign"></i> Pump Cost ($/kW)</label>
+            <input id="pumpCost" type="number" value="500" min="100" max="2000" />
+            <small>Cost per kW of pump capacity</small>
+          </div>
+          
+          <div class="input-group">
+            <label for="fittingsCost"><i class="fas fa-dollar-sign"></i> Fittings Cost ($/fitting)</label>
+            <input id="fittingsCost" type="number" value="50" min="1" max="1000" />
+            <small>Average cost per fitting/valve</small>
+          </div>
+          
+          <div class="input-group">
+            <label for="energyCost"><i class="fas fa-bolt"></i> Energy Cost ($/kWh)</label>
+            <input id="energyCost" type="number" value="0.12" step="0.01" min="0.01" max="1.0" />
+            <small>Electricity cost per kWh</small>
+          </div>
+          
+          <div class="input-group">
+            <label for="operatingHours"><i class="fas fa-clock"></i> Annual Operating Hours</label>
+            <input id="operatingHours" type="number" value="8760" min="1000" max="8760" />
+            <small>Hours per year (8760 = 24/7)</small>
+          </div>
+        </div>
+      </div>
+      
+      <div style="display: flex; gap: 10px; margin-top: 20px;">
+        <button id="calcBtn"><i class="fas fa-calculator"></i> Calculate System</button>
+        <button id="compareBtn" class="button-secondary"><i class="fas fa-balance-scale"></i> Compare Velocities</button>
+        <button id="optimizeBtn" class="button-success"><i class="fas fa-magic"></i> Optimize System</button>
+      </div>
+    </div>
+
+    <div id="comparison" class="section">
+      <h3><i class="fas fa-balance-scale"></i> Velocity Comparison & Trade-off Analysis</h3>
+      <p>Select different target velocities to analyze the trade-offs between pipe diameter, capital cost, operating cost, and system performance.</p>
+      
+      <div class="input-grid" style="grid-template-columns: 1fr 2fr; gap: 30px;">
+        <div>
+          <div class="input-group">
+            <label for="velocityOptions">Compare Velocities (m/s)</label>
+            <select id="velocityOptions" multiple style="height: 180px; width: 100%;">
+              <option value="0.5">0.5 m/s (Very Low)</option>
+              <option value="1.0">1.0 m/s (Low)</option>
+              <option value="1.5">1.5 m/s (Moderate)</option>
+              <option value="2.0" selected>2.0 m/s (Optimal)</option>
+              <option value="2.5">2.5 m/s (High)</option>
+              <option value="3.0">3.0 m/s (Very High)</option>
+              <option value="4.0">4.0 m/s (Extreme)</option>
+              <option value="5.0">5.0 m/s (Too High)</option>
+            </select>
+            <button id="runComparison" style="margin-top: 10px; width: 100%;"><i class="fas fa-chart-bar"></i> Run Comparison</button>
+          </div>
+          
+          <div class="input-group" style="margin-top: 20px;">
+            <label for="autoVelocityRange">Or Auto-Generate Velocity Range</label>
+            <div style="display: flex; gap: 10px;">
+              <button id="autoLowRange" class="button-small" style="flex: 1;">Low (0.5-2 m/s)</button>
+              <button id="autoMediumRange" class="button-small" style="flex: 1;">Medium (1-3 m/s)</button>
+              <button id="autoHighRange" class="button-small" style="flex: 1;">High (2-5 m/s)</button>
+            </div>
+          </div>
+        </div>
+        
+        <div>
+          <div id="comparisonResults" class="comparison-container" style="max-height: 400px; overflow-y: auto;">
+            <!-- Comparison cards will be generated here -->
+          </div>
+        </div>
+      </div>
+      
+      <div class="tradeoff-analysis">
+        <h4><i class="fas fa-exchange-alt"></i> Trade-off Analysis Summary</h4>
+        <div id="tradeoffSummary">
+          <p>Run velocity comparison to see trade-off analysis.</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="optimization" class="section">
+      <h3><i class="fas fa-cogs"></i> System Optimization</h3>
+      <p>Optimize the system by finding the ideal velocity that balances pipe diameter, pump efficiency, and total cost over the system lifespan.</p>
+      
+      <div class="input-grid">
+        <div class="input-group">
+          <label for="lifespan"><i class="fas fa-calendar-alt"></i> System Lifespan (years)</label>
+          <input id="lifespan" type="number" value="10" min="1" max="50" />
+        </div>
+        
+        <div class="input-group">
+          <label for="interestRate"><i class="fas fa-percentage"></i> Interest Rate (%)</label>
+          <input id="interestRate" type="number" value="5" step="0.1" min="0" max="20" />
+        </div>
+        
+        <div class="input-group">
+          <label for="optimizationGoal"><i class="fas fa-bullseye"></i> Optimization Goal</label>
+          <select id="optimizationGoal">
+            <option value="minCost">Minimize Total Cost</option>
+            <option value="minEnergy">Minimize Energy Consumption</option>
+            <option value="balanced">Balanced Approach</option>
+            <option value="optimalVelocity">Optimal Velocity (1-3 m/s)</option>
+          </select>
+        </div>
+      </div>
+      
+      <button id="runOptimization"><i class="fas fa-search"></i> Find Optimal Design</button>
+      
+      <div id="optimizationResults" class="recommendation" style="display: none;">
+        <h4><i class="fas fa-star"></i> Recommended Optimal Design</h4>
+        <div id="optimalDesignDetails"></div>
+      </div>
+    </div>
+
+    <div id="results" class="section">
+      <h3><i class="fas fa-clipboard-list"></i> Detailed Design Calculations</h3>
+      <pre id="output">Press Calculate to compute results.</pre>
+    </div>
+
+    <div id="cost" class="section">
+      <h3><i class="fas fa-dollar-sign"></i> Cost Analysis</h3>
+      <div class="cost-breakdown">
+        <div class="cost-item">
+          <div class="title">Pipe Cost</div>
+          <div id="costPipe" class="value">$0</div>
+        </div>
+        <div class="cost-item">
+          <div class="title">Pump Cost</div>
+          <div id="costPump" class="value">$0</div>
+        </div>
+        <div class="cost-item">
+          <div class="title">Fittings Cost</div>
+          <div id="costFittings" class="value">$0</div>
+        </div>
+        <div class="cost-item">
+          <div class="title">Installation Cost</div>
+          <div id="costInstall" class="value">$0</div>
+        </div>
+        <div class="cost-item">
+          <div class="title">Annual Energy Cost</div>
+          <div id="costEnergy" class="value">$0/year</div>
+        </div>
+        <div class="cost-item">
+          <div class="title">10-Year Energy Cost</div>
+          <div id="costEnergy10" class="value">$0</div>
+        </div>
+        <div class="cost-item">
+          <div class="title">Total Lifecycle Cost</div>
+          <div id="costLifecycle" class="value">$0</div>
+        </div>
+      </div>
+      
+      <div class="recommendation">
+        <h4><i class="fas fa-lightbulb"></i> Design Recommendation</h4>
+        <div id="designRecommendation">
+          <p>Calculate system to see design recommendations based on trade-offs between velocity, pipe diameter, friction losses, pump work, and total cost.</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="3d" class="section">
+      <h3><i class="fas fa-cube"></i> 3D Pipeline Visualization</h3>
+      <div id="threeContainer"></div>
+      <div style="margin-top: 10px; font-size: 14px; color: #666;">
+        <i class="fas fa-info-circle"></i> Visualization shows relative pipe size. Blue core represents flow area. Orange spheres represent fittings.
+      </div>
+    </div>
+
+    <div id="charts" class="section">
+      <h3><i class="fas fa-chart-bar"></i> Performance Analysis Charts</h3>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+        <div>
+          <canvas id="chartBars" height="200"></canvas>
+          <div style="text-align: center; margin-top: 10px; font-size: 14px; color: #666;">
+            System Performance Metrics
+          </div>
+        </div>
+        <div>
+          <canvas id="chartCosts" height="200"></canvas>
+          <div style="text-align: center; margin-top: 10px; font-size: 14px; color: #666;">
+            Cost Distribution
+          </div>
+        </div>
+      </div>
+      <div style="margin-top: 20px;">
+        <canvas id="chartTradeoff" height="150"></canvas>
+        <div style="text-align: center; margin-top: 10px; font-size: 14px; color: #666;">
+          Velocity vs Cost Trade-off
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+<script>
+  // ====== Global Variables ======
+  const el = id => document.getElementById(id);
+  const parseNum = (v, defaultVal=NaN) => { const x = parseFloat(v); return isFinite(x) ? x : defaultVal; };
+  
+  let currentResults = null;
+  let comparisonData = [];
+  let barChart, costChart, tradeoffChart;
+  let currentDiameter = 0.094; // Initial calculated diameter
+
+  // ====== Fittings Database ======
+  const fittingsDatabase = [
+    { id: 1, name: "90° Standard Elbow", defaultK: 0.9, category: "Elbow" },
+    { id: 2, name: "90° Long Radius Elbow", defaultK: 0.6, category: "Elbow" },
+    { id: 3, name: "45° Standard Elbow", defaultK: 0.4, category: "Elbow" },
+    { id: 4, name: "Tee (Straight Flow)", defaultK: 0.2, category: "Tee" },
+    { id: 5, name: "Tee (Branch Flow)", defaultK: 1.8, category: "Tee" },
+    { id: 6, name: "Gate Valve (Fully Open)", defaultK: 0.15, category: "Valve" },
+    { id: 7, name: "Globe Valve (Fully Open)", defaultK: 10, category: "Valve" },
+    { id: 8, name: "Check Valve (Swing)", defaultK: 2.5, category: "Valve" },
+    { id: 9, name: "Butterfly Valve (Fully Open)", defaultK: 0.3, category: "Valve" },
+    { id: 10, name: "Ball Valve (Fully Open)", defaultK: 0.05, category: "Valve" },
+    { id: 11, name: "Pipe Entrance (Sharp)", defaultK: 0.5, category: "Entrance/Exit" },
+    { id: 12, name: "Pipe Entrance (Rounded)", defaultK: 0.1, category: "Entrance/Exit" },
+    { id: 13, name: "Pipe Exit", defaultK: 1.0, category: "Entrance/Exit" },
+    { id: 14, name: "Sudden Contraction", defaultK: 0.42, category: "Contraction/Expansion" },
+    { id: 15, name: "Sudden Expansion", defaultK: 1.0, category: "Contraction/Expansion" },
+    { id: 16, name: "Gradual Contraction (15°)", defaultK: 0.1, category: "Contraction/Expansion" },
+    { id: 17, name: "Gradual Expansion (15°)", defaultK: 0.3, category: "Contraction/Expansion" },
+    { id: 18, name: "Strainer (Y-Type)", defaultK: 0.8, category: "Valve" },
+    { id: 19, name: "Strainer (Basket Type)", defaultK: 2.0, category: "Valve" },
+    { id: 20, name: "Strainer (T-Type)", defaultK: 1.8, category: "Valve" }
+  ];
+
+  // ====== User Fittings Array ======
+  let userFittings = [
+    { id: 1, name: "90° Standard Elbow", quantity: 4, K: 0.9 },
+    { id: 2, name: "Gate Valve (Fully Open)", quantity: 2, K: 0.15 },
+    { id: 11, name: "Pipe Entrance (Sharp)", quantity: 1, K: 0.5 },
+    { id: 13, name: "Pipe Exit", quantity: 1, K: 1.0 },
+    { id: 18, name: "Strainer (Y-Type)", quantity: 1, K: 0.8 }
+  ];
+
+  // ====== Input References ======
+  const targetVelocityEl = el('targetVelocity');
+  const flowEl = el('flow');
+  const lengthEl = el('length');
+  const elevEl = el('elev');
+  const ffEl = el('ff');
+  const effEl = el('eff');
+  const pipecostEl = el('pipecost');
+  const pumpCostEl = el('pumpCost');
+  const fittingsCostEl = el('fittingsCost');
+  const energyCostEl = el('energyCost');
+  const operatingHoursEl = el('operatingHours');
+  const pipeMaterialEl = el('pipeMaterial');
+  const viscosityEl = el('viscosity');
+  const roughnessEl = el('roughness');
+  const totalMinorKEl = el('totalMinorK');
+  const subtitleEl = el('subtitle');
+  const calculatedDiameterEl = el('calculatedDiameter');
+
+  // ====== KPI Elements ======
+  const kpiVel = el('kpiVel'), kpiHead = el('kpiHead'), kpiPower = el('kpiPower');
+  const kpiEnergyCost = el('kpiEnergyCost'), kpiTotalCost = el('kpiTotalCost'), kpiEfficiency = el('kpiEfficiency');
+  const output = el('output');
+
+  // ====== Cost Elements ======
+  const costPipe = el('costPipe'), costPump = el('costPump'), costFittings = el('costFittings'), costInstall = el('costInstall');
+  const costEnergy = el('costEnergy'), costEnergy10 = el('costEnergy10'), costLifecycle = el('costLifecycle');
+
+  // ====== Material Properties Lookup ======
+  const materialProperties = {
+    'steel': { name: 'Steel', roughness: 0.045, cost: 30 },
+    'pvc': { name: 'PVC', roughness: 0.0015, cost: 15 },
+    'castiron': { name: 'Cast Iron', roughness: 0.26, cost: 25 },
+    'concrete': { name: 'Concrete', roughness: 0.3, cost: 40 }
+  };
+
+  // ====== Calculate Diameter from Velocity ======
+  function calculateDiameterFromVelocity(targetVelocity, flowRate) {
+    const Q = flowRate / 3600; // Convert m³/hr to m³/s
+    const A = Q / targetVelocity; // Area = Q / V
+    const D = Math.sqrt((4 * A) / Math.PI); // D = sqrt(4A/π)
+    return D;
+  }
+
+  // ====== Calculate Velocity from Diameter ======
+  function calculateVelocityFromDiameter(diameter, flowRate) {
+    const Q = flowRate / 3600; // Convert m³/hr to m³/s
+    const A = Math.PI * diameter * diameter / 4; // Area = πD²/4
+    const V = Q / A;
+    return V;
+  }
+
+  // ====== Set Target Velocity Function ======
+  function setTargetVelocity(velocity) {
+    targetVelocityEl.value = velocity;
+    updateCalculatedDiameter();
+    // Auto-calculate after a short delay
+    setTimeout(calculateAll, 500);
+  }
+
+  // ====== Update Calculated Diameter Display ======
+  function updateCalculatedDiameter() {
+    const targetVelocity = parseNum(targetVelocityEl.value, 2.0);
+    const flowRate = parseNum(flowEl.value, 50);
+    
+    if (targetVelocity > 0 && flowRate > 0) {
+      const D = calculateDiameterFromVelocity(targetVelocity, flowRate);
+      currentDiameter = D;
+      const mm = D * 1000;
+      calculatedDiameterEl.textContent = `${D.toFixed(3)} m (${mm.toFixed(0)} mm)`;
+      
+      // Update efficiency indicator
+      const velPercent = Math.min(100, Math.max(0, (targetVelocity - 0.5) / 2.5 * 100));
+      const velocityEfficiencyEl = el('velocityEfficiency');
+      if (velocityEfficiencyEl) {
+        velocityEfficiencyEl.style.width = `${velPercent}%`;
+      }
+    }
+  }
+
+  // ====== Initialize Fittings Table ======
+  function initializeFittingsTable() {
+    const tableBody = el('fittingsTableBody');
+    tableBody.innerHTML = '';
+    
+    userFittings.forEach((fitting, index) => {
+      const dbFitting = fittingsDatabase.find(f => f.id === fitting.id);
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${fitting.name}</td>
+        <td><input type="number" value="${fitting.quantity}" min="0" max="100" class="fitting-quantity" data-index="${index}" style="width: 70px;"></td>
+        <td><input type="number" value="${fitting.K}" step="0.01" min="0" max="50" class="fitting-K" data-index="${index}" style="width: 80px;"></td>
+        <td class="fitting-totalK">${(fitting.quantity * fitting.K).toFixed(2)}</td>
+        <td><button class="button-small" onclick="removeFitting(${index})"><i class="fas fa-trash"></i></button></td>
+      `;
+      tableBody.appendChild(row);
+    });
+    
+    updateTotalMinorK();
+    updateFittingsBreakdown();
+  }
+
+  // ====== Fitting Management Functions ======
+  function addFitting() {
+    // Create a simple selection dialog
+    let optionsText = "Select a fitting type:\n\n";
+    fittingsDatabase.forEach((fitting, index) => {
+      optionsText += `${index + 1}. ${fitting.name} (K=${fitting.defaultK}, ${fitting.category})\n`;
+    });
+    
+    const choice = prompt(optionsText + "\nEnter number (1-20):");
+    if (!choice) return;
+    
+    const index = parseInt(choice) - 1;
+    if (isNaN(index) || index < 0 || index >= fittingsDatabase.length) {
+      alert("Invalid selection");
+      return;
+    }
+    
+    const dbFitting = fittingsDatabase[index];
+    const quantity = parseInt(prompt(`Enter quantity for ${dbFitting.name}:`, "1")) || 1;
+    
+    userFittings.push({
+      id: dbFitting.id,
+      name: dbFitting.name,
+      quantity: quantity,
+      K: dbFitting.defaultK
+    });
+    
+    initializeFittingsTable();
+    updateTotalMinorK();
+    showNotification(`Added ${quantity} × ${dbFitting.name}`);
+  }
+
+  function removeFitting(index) {
+    const fitting = userFittings[index];
+    if (confirm(`Remove ${fitting.quantity} × ${fitting.name}?`)) {
+      userFittings.splice(index, 1);
+      initializeFittingsTable();
+      updateTotalMinorK();
+      showNotification(`Removed ${fitting.name}`);
+    }
+  }
+
+  function resetFittingsToDefaults() {
+    userFittings = [
+      { id: 1, name: "90° Standard Elbow", quantity: 4, K: 0.9 },
+      { id: 2, name: "Gate Valve (Fully Open)", quantity: 2, K: 0.15 },
+      { id: 11, name: "Pipe Entrance (Sharp)", quantity: 1, K: 0.5 },
+      { id: 13, name: "Pipe Exit", quantity: 1, K: 1.0 },
+      { id: 18, name: "Strainer (Y-Type)", quantity: 1, K: 0.8 }
+    ];
+    initializeFittingsTable();
+    updateTotalMinorK();
+    showNotification("Reset fittings to defaults");
+  }
+
+  function updateTotalMinorK() {
+    // Update quantities and K values from inputs
+    document.querySelectorAll('.fitting-quantity').forEach(input => {
+      const index = parseInt(input.dataset.index);
+      userFittings[index].quantity = parseFloat(input.value) || 0;
+    });
+    
+    document.querySelectorAll('.fitting-K').forEach(input => {
+      const index = parseInt(input.dataset.index);
+      userFittings[index].K = parseFloat(input.value) || 0;
+    });
+    
+    // Update total K display
+    let totalK = 0;
+    userFittings.forEach((fitting, index) => {
+      const total = fitting.quantity * fitting.K;
+      totalK += total;
+      
+      // Update individual total K in table
+      const totalCell = document.querySelectorAll('.fitting-totalK')[index];
+      if (totalCell) {
+        totalCell.textContent = total.toFixed(2);
+      }
+    });
+    
+    totalMinorKEl.value = totalK.toFixed(2);
+    updateFittingsBreakdown();
+  }
+
+  function updateFittingsBreakdown() {
+    const breakdownContent = el('lossesBreakdownContent');
+    let html = '<div class="loss-item"><strong>Fitting</strong><strong>K × Qty = Total</strong></div>';
+    
+    userFittings.forEach(fitting => {
+      const total = fitting.quantity * fitting.K;
+      if (fitting.quantity > 0) {
+        html += `<div class="loss-item">
+          <span>${fitting.name}</span>
+          <span>${fitting.K.toFixed(2)} × ${fitting.quantity} = ${total.toFixed(2)}</span>
+        </div>`;
+      }
+    });
+    
+    const totalK = userFittings.reduce((sum, f) => sum + (f.quantity * f.K), 0);
+    html += `<div class="loss-item" style="border-top: 2px solid #ccc; font-weight: bold;">
+      <span>Total ΣK</span>
+      <span>${totalK.toFixed(2)}</span>
+    </div>`;
+    
+    breakdownContent.innerHTML = html;
+  }
+
+  function getTotalMinorK() {
+    return userFittings.reduce((sum, fitting) => sum + (fitting.quantity * fitting.K), 0);
+  }
+
+  // ====== Auto-generate Velocity Ranges ======
+  function autoGenerateVelocityRange(minVel, maxVel, stepVel = 0.5) {
+    const velocityOptions = el('velocityOptions');
+    
+    // Clear current selection
+    velocityOptions.innerHTML = '';
+    
+    // Generate new options
+    let velocities = [];
+    for (let v = minVel; v <= maxVel; v += stepVel) {
+      velocities.push(v);
+    }
+    
+    // Add specific optimal range markers
+    velocities = [...new Set([...velocities, 1.0, 1.5, 2.0, 2.5, 3.0].sort((a,b) => a-b))];
+    
+    velocities.forEach(velocity => {
+      const option = document.createElement('option');
+      option.value = velocity;
+      
+      let label = `${velocity.toFixed(1)} m/s`;
+      if (velocity >= 1 && velocity <= 3) {
+        label += ' (Optimal)';
+      } else if (velocity < 1) {
+        label += ' (Low)';
+      } else if (velocity > 3 && velocity <= 5) {
+        label += ' (High)';
+      } else {
+        label += ' (Extreme)';
+      }
+      
+      option.textContent = label;
+      
+      // Select the one closest to current target velocity
+      const currentVelocity = parseNum(targetVelocityEl.value, 2.0);
+      if (Math.abs(velocity - currentVelocity) < stepVel / 2) {
+        option.selected = true;
+      }
+      
+      velocityOptions.appendChild(option);
+    });
+    
+    showNotification(`Generated velocity range: ${minVel}-${maxVel} m/s`);
+  }
+
+  // ====== COMPLETE HYDRAULIC CALCULATIONS ======
+  function computeHydraulics(targetVelocity = null) {
+    // read and validate
+    const targetV = targetVelocity !== null ? targetVelocity : parseNum(targetVelocityEl.value, 2.0);
+    const Q_m3hr = parseNum(flowEl.value, 50);
+    const L = parseNum(lengthEl.value, 200);
+    const H = parseNum(elevEl.value, 15);
+    
+    // Calculate diameter from target velocity
+    const D = calculateDiameterFromVelocity(targetV, Q_m3hr);
+    currentDiameter = D;
+    
+    // Update calculated diameter display
+    updateCalculatedDiameter();
+    
+    // Get material properties
+    const pipeMaterialValue = pipeMaterialEl.value;
+    const material = materialProperties[pipeMaterialValue] || materialProperties.steel;
+    
+    // Update roughness and cost based on material
+    roughnessEl.value = material.roughness;
+    pipecostEl.value = material.cost;
+    
+    // Get minor losses coefficient from fittings
+    const K_minor_total = getTotalMinorK();
+    const eff_percent = parseNum(effEl.value, 75);
+    const eff = eff_percent / 100.0;
+    
+    const cost_per_m = parseNum(pipecostEl.value, 30);
+    const pumpCost_per_kW = parseNum(pumpCostEl.value, 500);
+    const fittingsCost_per_unit = parseNum(fittingsCostEl.value, 50);
+    const energyCost_per_kWh = parseNum(energyCostEl.value, 0.12);
+    const hoursPerYear = parseNum(operatingHoursEl.value, 8760);
+    const mu = parseNum(viscosityEl.value, 0.001); // Pa·s
+    const epsilon = parseNum(roughnessEl.value, 0.045) / 1000; // Convert mm to m
+
+    if (!D || !Q_m3hr || !L) {
+      throw new Error('Please enter valid values for flow rate, velocity, and length.');
+    }
+
+    // ====== FORMULA 1: Velocity (should match target) ======
+    const Q = Q_m3hr / 3600.0; // m³/s
+    const A = Math.PI * D * D / 4.0; // m²
+    const V = Q / A; // m/s (should equal targetV)
+
+    // ====== FORMULA 2: Reynolds Number ======
+    const rho = 1000; // kg/m³ (water density)
+    const g = 9.81; // m/s²
+    const Re = (rho * V * D) / mu;
+
+    // ====== FORMULA 3: Friction Factor ======
+    let f;
+    const relativeRoughness = epsilon / D;
+    
+    if (Re < 2000) {
+      f = 64 / Re;
+    } else if (Re > 4000) {
+      const term1 = Math.pow((epsilon/(3.7*D)), 1.11);
+      const term2 = 6.9/Re;
+      f = Math.pow((-1.8 * Math.log10(term1 + term2)), -2);
+    } else {
+      const f_laminar = 64 / 2000;
+      const f_turbulent = Math.pow((-1.8 * Math.log10(Math.pow((epsilon/(3.7*D)), 1.11) + 6.9/4000)), -2);
+      const weight = (Re - 2000) / 2000;
+      f = f_laminar * (1 - weight) + f_turbulent * weight;
+    }
+    
+    ffEl.value = f.toFixed(4);
+
+    // ====== FORMULA 4: Head Losses ======
+    const hf_major = f * (L / D) * (V * V / (2 * g));
+    
+    // Calculate individual minor losses for each fitting type
+    const minorLossesBreakdown = [];
+    let hf_minor_total = 0;
+    userFittings.forEach(fitting => {
+      if (fitting.quantity > 0) {
+        const hf_fitting = fitting.K * (V * V / (2 * g));
+        const hf_total_for_fitting = hf_fitting * fitting.quantity;
+        hf_minor_total += hf_total_for_fitting;
+        
+        minorLossesBreakdown.push({
+          name: fitting.name,
+          quantity: fitting.quantity,
+          K: fitting.K,
+          hf_per_unit: hf_fitting,
+          hf_total: hf_total_for_fitting
+        });
+      }
+    });
+    
+    const hf_total = hf_major + hf_minor_total;
+    const totalHead = hf_total + H;
+
+    // ====== FORMULA 5: Hydraulic Power ======
+    const P_hydraulic = (rho * g * Q * totalHead) / 1000.0; // kW
+    const P_pump = P_hydraulic / eff; // kW
+
+    // ====== FORMULA 6: System Efficiency ======
+    const P_ideal_elevation = (rho * g * Q * H) / 1000.0;
+    const systemEfficiency = (P_ideal_elevation / P_pump) * 100;
+
+    // ====== Flow Regime Detection ======
+    let flowRegime;
+    if (Re < 2000) flowRegime = 'Laminar';
+    else if (Re < 4000) flowRegime = 'Transition';
+    else flowRegime = 'Turbulent';
+
+    // ====== Velocity Status ======
+    const velocityStatus = V < 1 ? 'low' : V > 3 ? 'high' : 'optimal';
+
+    // ====== Cost Calculations ======
+    const totalFittingsCount = userFittings.reduce((sum, f) => sum + f.quantity, 0);
+    const pipeCapex = cost_per_m * L;
+    const pumpCapex = P_pump * pumpCost_per_kW;
+    const fittingsCapex = totalFittingsCount * fittingsCost_per_unit;
+    const installationCapex = (pipeCapex + pumpCapex + fittingsCapex) * 0.3;
+    const totalCapex = pipeCapex + pumpCapex + fittingsCapex + installationCapex;
+    const opex_yearly = P_pump * energyCost_per_kWh * hoursPerYear;
+
+    return {
+      // Inputs
+      targetV, D, Q_m3hr, Q, A, V, L, H,
+      // Flow characteristics
+      Re, flowRegime, relativeRoughness, f,
+      // Losses
+      hf_major, hf_minor_total, hf_total, totalHead, minorLossesBreakdown, K_minor_total,
+      // Power
+      P_hydraulic, P_pump, eff_percent,
+      // Efficiency
+      systemEfficiency,
+      // Costs
+      pipeCapex, pumpCapex, fittingsCapex, installationCapex, totalCapex, totalFittingsCount,
+      opex_yearly,
+      // Status
+      velocityStatus,
+      // Constants
+      energyCost_per_kWh, hoursPerYear,
+      rho, mu, g, material: material.name
+    };
+  }
+
+  // ====== UI Update Function ======
+  function calculateAll() {
+    try {
+      currentResults = computeHydraulics();
+      updateUI(currentResults);
+      showNotification('System calculated successfully!');
+    } catch (err) {
+      alert(err.message || 'Calculation error'); 
+      output.innerText = 'Error: ' + (err.message || 'invalid input');
+    }
+  }
+
+  function updateUI(res) {
+    // Update subtitle with current values
+    subtitleEl.textContent = `Industrial Fluid Transport System: ${res.Q_m3hr} m³/h over ${res.L}m with ${res.H}m elevation`;
+    
+    // Update KPIs
+    kpiVel.innerHTML = `${res.V.toFixed(2)}<span class="unit"> m/s</span>`;
+    kpiHead.innerHTML = `${res.totalHead.toFixed(2)}<span class="unit"> m</span>`;
+    kpiPower.innerHTML = `${res.P_pump.toFixed(2)}<span class="unit"> kW</span>`;
+    kpiEnergyCost.innerHTML = `$${res.opex_yearly.toFixed(0)}<span class="unit"> /year</span>`;
+    kpiTotalCost.innerHTML = `$${res.totalCapex.toFixed(0)}<span class="unit"></span>`;
+    kpiEfficiency.innerHTML = `${res.systemEfficiency.toFixed(1)}<span class="unit"> %</span>`;
+    
+    // Update calculated diameter display
+    calculatedDiameterEl.textContent = `${res.D.toFixed(3)} m (${(res.D*1000).toFixed(0)} mm)`;
+    
+    // Update cost breakdown
+    costPipe.innerHTML = `$${res.pipeCapex.toFixed(0)}`;
+    costPump.innerHTML = `$${res.pumpCapex.toFixed(0)}`;
+    costFittings.innerHTML = `$${res.fittingsCapex.toFixed(0)}`;
+    costInstall.innerHTML = `$${res.installationCapex.toFixed(0)}`;
+    costEnergy.innerHTML = `$${res.opex_yearly.toFixed(0)}/year`;
+    
+    // 10-year energy cost
+    const energy10Year = res.opex_yearly * 10;
+    costEnergy10.innerHTML = `$${energy10Year.toFixed(0)}`;
+    
+    // Lifecycle cost
+    const lifecycleCost = res.totalCapex + energy10Year;
+    costLifecycle.innerHTML = `$${lifecycleCost.toFixed(0)}`;
+    
+    // Update detailed output with fittings breakdown
+    let minorLossesDetail = '';
+    res.minorLossesBreakdown.forEach(loss => {
+      minorLossesDetail += `  ${loss.quantity} × ${loss.name} (K=${loss.K.toFixed(2)}): ${loss.hf_per_unit.toFixed(3)} m × ${loss.quantity} = ${loss.hf_total.toFixed(3)} m\n`;
+    });
+    
+    output.innerText = 
+`===== DESIGN CALCULATIONS =====
+Target velocity: ${res.targetV.toFixed(2)} m/s
+Calculated diameter: ${(res.D*1000).toFixed(1)} mm (${res.D.toFixed(3)} m)
+Flow rate: ${res.Q_m3hr.toFixed(1)} m³/hr (${res.Q.toFixed(4)} m³/s)
+Cross-sectional area: ${res.A.toFixed(6)} m²
+Actual velocity: ${res.V.toFixed(3)} m/s
+
+===== FLOW CHARACTERISTICS =====
+Reynolds number: Re = (ρ * v * D) / μ = ${res.Re.toFixed(0)} (${res.flowRegime} flow)
+Relative roughness: ε/D = ${res.relativeRoughness.toFixed(6)}
+Friction factor (f): ${res.f.toFixed(4)} (calculated)
+
+===== HEAD LOSS CALCULATIONS =====
+MAJOR LOSSES (Friction):
+  hf = f * (L/D) * (v²/2g)
+  f = ${res.f.toFixed(4)}, L = ${res.L} m, D = ${res.D.toFixed(3)} m, V = ${res.V.toFixed(3)} m/s
+  Major head loss: ${res.hf_major.toFixed(3)} m
+
+MINOR LOSSES (Fittings & Valves):
+  Total ΣK = ${res.K_minor_total.toFixed(2)}
+${minorLossesDetail}
+  Total minor head loss: ${res.hf_minor_total.toFixed(3)} m
+
+TOTAL HEAD LOSS: ${res.hf_total.toFixed(3)} m
+Elevation gain: ${res.H.toFixed(1)} m
+TOTAL HEAD REQUIRED: h_t = hf + hm + h = ${res.totalHead.toFixed(3)} m
+
+===== PUMP CALCULATIONS =====
+Hydraulic (ideal) power: P_out = (ρ * g * Q * h_t) / 1000
+  ρ = ${res.rho} kg/m³, g = ${res.g} m/s², Q = ${res.Q.toFixed(6)} m³/s, h_t = ${res.totalHead.toFixed(3)} m
+  Hydraulic power: ${res.P_hydraulic.toFixed(3)} kW
+
+Pump (actual) power: P_in = P_out / η
+  Pump efficiency: η = ${res.eff_percent}%
+  PUMP POWER REQUIRED: ${res.P_pump.toFixed(3)} kW
+
+System efficiency: η_sys = (ρ*g*Q*H) / P_in = ${res.systemEfficiency.toFixed(1)}%
+
+===== SYSTEM PERFORMANCE =====
+Velocity status: ${res.velocityStatus} (optimal: 1-3 m/s)
+Flow regime: ${res.flowRegime}
+Total fittings count: ${res.totalFittingsCount}
+Annual operating hours: ${res.hoursPerYear}
+Annual energy cost: $${res.opex_yearly.toFixed(2)}`;
+
+    // Update design recommendation
+    updateDesignRecommendation(res);
+    
+    // Update charts
+    updateBarChart([res.hf_major, res.hf_minor_total, res.totalHead, res.P_pump]);
+    updateCostChart([res.pipeCapex, res.pumpCapex, res.fittingsCapex, res.installationCapex, res.opex_yearly]);
+    
+    // Update 3D visualization
+    update3DPipe(res.D);
+    
+    // Update efficiency bars
+    updateEfficiencyIndicators(res);
+  }
+
+  function updateEfficiencyIndicators(res) {
+    const velPercent = Math.min(100, Math.max(0, (res.V - 0.5) / 2.5 * 100));
+    const velocityEfficiencyEl = el('velocityEfficiency');
+    if (velocityEfficiencyEl) {
+      velocityEfficiencyEl.style.width = `${velPercent}%`;
+    }
+    
+    const pumpEfficiencyBarEl = el('pumpEfficiencyBar');
+    if (pumpEfficiencyBarEl) {
+      pumpEfficiencyBarEl.style.width = `${res.eff_percent}%`;
+    }
+  }
+
+  function updateDesignRecommendation(res) {
+    let recommendation = '';
+    
+    // Flow regime
+    const regimeColor = res.flowRegime === 'Turbulent' ? 'status-good' : 
+                       res.flowRegime === 'Laminar' ? 'status-warning' : 'status-bad';
+    recommendation += `<p><span class="status-indicator ${regimeColor}"></span> <strong>Flow regime:</strong> ${res.flowRegime} (Re = ${res.Re.toFixed(0)})</p>`;
+    
+    // Velocity
+    if (res.V < 1) {
+      recommendation += `<p><span class="status-indicator status-warning"></span> <strong>Velocity too low (${res.V.toFixed(2)} m/s):</strong> Increase target velocity to reduce pipe size and cost.</p>`;
+    } else if (res.V > 3) {
+      recommendation += `<p><span class="status-indicator status-warning"></span> <strong>Velocity too high (${res.V.toFixed(2)} m/s):</strong> Reduce target velocity to decrease friction losses.</p>`;
+    } else {
+      recommendation += `<p><span class="status-indicator status-good"></span> <strong>Velocity optimal (${res.V.toFixed(2)} m/s):</strong> Good balance between pipe cost and energy cost.</p>`;
+    }
+    
+    // Fittings recommendation
+    if (res.K_minor_total > 10) {
+      recommendation += `<p><span class="status-indicator status-warning"></span> <strong>High minor losses (ΣK = ${res.K_minor_total.toFixed(1)}):</strong> Consider using low-loss fittings (ball valves instead of globe valves).</p>`;
+    } else if (res.K_minor_total > 5) {
+      recommendation += `<p><span class="status-indicator status-warning"></span> <strong>Moderate minor losses (ΣK = ${res.K_minor_total.toFixed(1)}):</strong> Minor losses are significant.</p>`;
+    } else {
+      recommendation += `<p><span class="status-indicator status-good"></span> <strong>Low minor losses (ΣK = ${res.K_minor_total.toFixed(1)}):</strong> Good fittings selection.</p>`;
+    }
+    
+    // Efficiency
+    if (res.systemEfficiency < 40) {
+      recommendation += `<p><span class="status-indicator status-bad"></span> <strong>System efficiency low (${res.systemEfficiency.toFixed(1)}%):</strong> Improve design by adjusting velocity or reducing losses.</p>`;
+    } else if (res.systemEfficiency < 60) {
+      recommendation += `<p><span class="status-indicator status-warning"></span> <strong>System efficiency moderate (${res.systemEfficiency.toFixed(1)}%):</strong> Could optimize further.</p>`;
+    } else {
+      recommendation += `<p><span class="status-indicator status-good"></span> <strong>System efficiency good (${res.systemEfficiency.toFixed(1)}%):</strong> Well-designed system.</p>`;
+    }
+    
+    // Scale recommendation
+    let scaleNote = '';
+    if (res.Q_m3hr < 10) {
+      scaleNote = ' (small scale system)';
+    } else if (res.Q_m3hr > 200) {
+      scaleNote = ' (large scale system)';
+    } else {
+      scaleNote = ' (medium scale system)';
+    }
+    
+    // Final
+    recommendation += `<p><strong>Design Suggestion:</strong> Target velocity of ${res.targetV.toFixed(1)} m/s gives ${(res.D*1000).toFixed(0)} mm ${res.material} pipe with ${res.totalFittingsCount} fittings${scaleNote}. Actual velocity: ${res.V.toFixed(2)} m/s (${res.flowRegime}) with ${res.systemEfficiency.toFixed(1)}% efficiency. 10-year cost: $${(res.totalCapex + res.opex_yearly * 10).toFixed(0)}.</p>`;
+    
+    el('designRecommendation').innerHTML = recommendation;
+  }
+
+  // ====== Comparison Functionality ======
+  function runDiameterComparison() {
+    const velocityOptions = Array.from(el('velocityOptions').selectedOptions).map(opt => parseFloat(opt.value));
+    
+    if (velocityOptions.length < 2) {
+      alert('Please select at least 2 velocities to compare.');
+      return;
+    }
+    
+    comparisonData = [];
+    const comparisonContainer = el('comparisonResults');
+    comparisonContainer.innerHTML = '';
+    
+    velocityOptions.forEach((velocity, index) => {
+      try {
+        const res = computeHydraulics(velocity);
+        comparisonData.push(res);
+        
+        const D_mm = res.D * 1000;
+        const card = document.createElement('div');
+        card.className = 'comparison-card';
+        if (index === 0) card.classList.add('selected');
+        
+        card.innerHTML = `
+          <h4>${velocity.toFixed(1)} m/s → ${D_mm.toFixed(0)} mm</h4>
+          <div class="comparison-metrics">
+            <div class="metric-item">
+              <div class="metric-value">${D_mm.toFixed(0)}</div>
+              <div class="metric-label">Diameter (mm)</div>
+            </div>
+            <div class="metric-item">
+              <div class="metric-value">${res.Re > 10000 ? (res.Re/1000).toFixed(1) + 'k' : res.Re.toFixed(0)}</div>
+              <div class="metric-label">Reynolds No.</div>
+            </div>
+            <div class="metric-item">
+              <div class="metric-value">${res.totalHead.toFixed(1)}</div>
+              <div class="metric-label">Total Head (m)</div>
+            </div>
+            <div class="metric-item">
+              <div class="metric-value">${res.P_pump.toFixed(2)}</div>
+              <div class="metric-label">Pump Power (kW)</div>
+            </div>
+            <div class="metric-item">
+              <div class="metric-value">$${res.pipeCapex.toFixed(0)}</div>
+              <div class="metric-label">Pipe Cost</div>
+            </div>
+            <div class="metric-item">
+              <div class="metric-value">$${res.opex_yearly.toFixed(0)}</div>
+              <div class="metric-label">Annual Energy</div>
+            </div>
+          </div>
+          <div style="margin-top: 10px; font-size: 12px; color: #666;">
+            <span class="status-indicator ${res.flowRegime === 'Turbulent' ? 'status-good' : res.flowRegime === 'Laminar' ? 'status-warning' : 'status-bad'}"></span>
+            ${res.flowRegime} flow | ΣK = ${res.K_minor_total.toFixed(1)}
+          </div>
+          <button onclick="selectVelocity(${velocity})" style="margin-top: 10px; width: 100%;">
+            <i class="fas fa-check"></i> Select This Velocity
+          </button>
+        `;
+        
+        comparisonContainer.appendChild(card);
+      } catch (err) {
+        console.error(`Error calculating for velocity ${velocity}:`, err);
+      }
+    });
+    
+    updateTradeoffAnalysis(comparisonData);
+    updateTradeoffChart(comparisonData);
+    showNotification(`Compared ${velocityOptions.length} velocities`);
+  }
+
+  function updateTradeoffAnalysis(data) {
+    if (data.length < 2) return;
+    
+    let summary = '';
+    data.sort((a, b) => a.targetV - b.targetV);
+    const slowest = data[0];
+    const fastest = data[data.length - 1];
+    
+    summary += `<p><strong>Trade-off Analysis:</strong> Comparing ${slowest.targetV.toFixed(1)} m/s to ${fastest.targetV.toFixed(1)} m/s:</p>`;
+    
+    summary += `<div class="tradeoff-item">
+      <span>Pipe cost decrease:</span>
+      <span>${(slowest.pipeCapex/fastest.pipeCapex).toFixed(1)}x ($${fastest.pipeCapex.toFixed(0)} → $${slowest.pipeCapex.toFixed(0)})</span>
+    </div>`;
+    
+    summary += `<div class="tradeoff-item">
+      <span>Annual energy cost increase:</span>
+      <span>${(slowest.opex_yearly/fastest.opex_yearly).toFixed(1)}x ($${fastest.opex_yearly.toFixed(0)} → $${slowest.opex_yearly.toFixed(0)})</span>
+    </div>`;
+    
+    summary += `<div class="tradeoff-item">
+      <span>Diameter change:</span>
+      <span>${(fastest.D*1000).toFixed(0)} → ${(slowest.D*1000).toFixed(0)} mm</span>
+    </div>`;
+    
+    const energySavings = fastest.opex_yearly - slowest.opex_yearly;
+    const costDifference = fastest.pipeCapex - slowest.pipeCapex;
+    
+    if (energySavings > 0) {
+      summary += `<div class="tradeoff-item">
+        <span>Payback period:</span>
+        <span>${(costDifference / energySavings).toFixed(1)} years</span>
+      </div>`;
+    } else {
+      summary += `<div class="tradeoff-item">
+        <span>Payback period:</span>
+        <span>N/A (no energy savings)</span>
+      </div>`;
+    }
+    
+    // Find optimal based on 10-year cost
+    let optimalIndex = 0;
+    let minLifecycleCost = Infinity;
+    data.forEach((res, index) => {
+      const lifecycleCost = res.totalCapex + res.opex_yearly * 10;
+      if (lifecycleCost < minLifecycleCost) {
+        minLifecycleCost = lifecycleCost;
+        optimalIndex = index;
+      }
+    });
+    
+    const optimal = data[optimalIndex];
+    summary += `<p style="margin-top: 15px;"><strong>Optimal for minimum 10-year cost:</strong> ${optimal.targetV.toFixed(1)} m/s (${(optimal.D*1000).toFixed(0)} mm, Total: $${minLifecycleCost.toFixed(0)})</p>`;
+    
+    el('tradeoffSummary').innerHTML = summary;
+  }
+
+  function selectVelocity(velocity) {
+    targetVelocityEl.value = velocity;
+    calculateAll();
+    
+    document.querySelectorAll('.comparison-card').forEach(card => {
+      card.classList.remove('selected');
+    });
+    
+    document.querySelectorAll('.comparison-card').forEach(card => {
+      if (card.querySelector('h4').textContent.includes(`${velocity.toFixed(1)} m/s`)) {
+        card.classList.add('selected');
+      }
+    });
+  }
+
+  // ====== Optimization Function ======
+  function runOptimization() {
+    const lifespan = parseNum(el('lifespan').value, 10);
+    const interestRate = parseNum(el('interestRate').value, 5) / 100;
+    const goal = el('optimizationGoal').value;
+    
+    // Generate velocity range for optimization
+    let velocities = [];
+    if (goal === 'optimalVelocity') {
+      // Focus on optimal range 1-3 m/s
+      velocities = [1.0, 1.2, 1.4, 1.6, 1.8, 2.0, 2.2, 2.4, 2.6, 2.8, 3.0];
+    } else {
+      // Wider range for other optimization goals
+      velocities = [0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0, 2.25, 2.5, 2.75, 3.0, 3.5, 4.0, 5.0];
+    }
+    
+    const results = [];
+    
+    velocities.forEach(velocity => {
+      try {
+        const res = computeHydraulics(velocity);
+        
+        let lifecycleCost = res.totalCapex;
+        for (let year = 1; year <= lifespan; year++) {
+          lifecycleCost += res.opex_yearly / Math.pow(1 + interestRate, year);
+        }
+        
+        results.push({
+          velocity,
+          res,
+          lifecycleCost,
+          annualCost: res.opex_yearly,
+          capitalCost: res.totalCapex,
+          pumpPower: res.P_pump,
+          diameter: res.D
+        });
+      } catch (err) {
+        console.error(`Error in optimization for velocity ${velocity}:`, err);
+      }
+    });
+    
+    let optimal;
+    if (goal === 'minCost') {
+      optimal = results.reduce((min, r) => r.lifecycleCost < min.lifecycleCost ? r : min);
+    } else if (goal === 'minEnergy') {
+      optimal = results.reduce((min, r) => r.pumpPower < min.pumpPower ? r : min);
+    } else if (goal === 'optimalVelocity') {
+      // Filter for velocities in optimal range 1-3 m/s
+      const optimalResults = results.filter(r => r.velocity >= 1 && r.velocity <= 3);
+      if (optimalResults.length > 0) {
+        optimal = optimalResults.reduce((min, r) => r.lifecycleCost < min.lifecycleCost ? r : min);
+      } else {
+        optimal = results.reduce((min, r) => r.lifecycleCost < min.lifecycleCost ? r : min);
+      }
+    } else {
+      const maxCost = Math.max(...results.map(r => r.lifecycleCost));
+      const minCost = Math.min(...results.map(r => r.lifecycleCost));
+      const maxPower = Math.max(...results.map(r => r.pumpPower));
+      const minPower = Math.min(...results.map(r => r.pumpPower));
+      
+      optimal = results.reduce((best, r) => {
+        const costScore = (r.lifecycleCost - minCost) / (maxCost - minCost || 1);
+        const powerScore = (r.pumpPower - minPower) / (maxPower - minPower || 1);
+        const totalScore = costScore * 0.6 + powerScore * 0.4;
+        
+        const bestCostScore = (best.lifecycleCost - minCost) / (maxCost - minCost || 1);
+        const bestPowerScore = (best.pumpPower - minPower) / (maxPower - minPower || 1);
+        const bestTotalScore = bestCostScore * 0.6 + bestPowerScore * 0.4;
+        
+        return totalScore < bestTotalScore ? r : best;
+      });
+    }
+    
+    const optimalDiv = el('optimizationResults');
+    optimalDiv.style.display = 'block';
+    
+    el('optimalDesignDetails').innerHTML = `
+      <p><strong>Optimal Velocity:</strong> ${optimal.velocity.toFixed(2)} m/s</p>
+      <p><strong>Calculated Pipe Diameter:</strong> ${(optimal.diameter*1000).toFixed(0)} mm (${optimal.diameter.toFixed(3)} m)</p>
+      <p><strong>Key Performance:</strong></p>
+      <ul>
+        <li>Flow velocity: ${optimal.res.V.toFixed(2)} m/s (${optimal.res.flowRegime})</li>
+        <li>Total head required: ${optimal.res.totalHead.toFixed(2)} m</li>
+        <li>Pump power: ${optimal.res.P_pump.toFixed(2)} kW</li>
+        <li>System efficiency: ${optimal.res.systemEfficiency.toFixed(1)}%</li>
+        <li>Reynolds number: ${optimal.res.Re.toFixed(0)}</li>
+        <li>Minor losses ΣK: ${optimal.res.K_minor_total.toFixed(1)}</li>
+      </ul>
+      <p><strong>Cost Analysis (${lifespan}-year lifespan):</strong></p>
+      <ul>
+        <li>Capital cost: $${optimal.capitalCost.toFixed(0)}</li>
+        <li>Annual energy cost: $${optimal.annualCost.toFixed(0)}</li>
+        <li>Total lifecycle cost: $${optimal.lifecycleCost.toFixed(0)}</li>
+      </ul>
+      <p><strong>Recommendation:</strong> Best ${goal === 'minCost' ? 'cost efficiency' : goal === 'minEnergy' ? 'energy efficiency' : goal === 'optimalVelocity' ? 'velocity optimization (1-3 m/s)' : 'balanced performance'}.</p>
+    `;
+    
+    targetVelocityEl.value = optimal.velocity;
+    calculateAll();
+    showNotification(`Found optimal velocity: ${optimal.velocity.toFixed(2)} m/s (${(optimal.diameter*1000).toFixed(0)} mm)`);
+  }
+
+  // ====== Chart Functions ======
+  function updateBarChart(values) {
+    const barCtx = document.getElementById('chartBars').getContext('2d');
+    const labels = ['Major Losses', 'Minor Losses', 'Total Head', 'Pump Power'];
+    
+    if (barChart) barChart.destroy();
+    
+    barChart = new Chart(barCtx, {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [{
+          label: 'System Metrics',
+          data: values,
+          backgroundColor: [
+            'rgba(255, 99, 132, 0.7)',
+            'rgba(54, 162, 235, 0.7)',
+            'rgba(255, 206, 86, 0.7)',
+            'rgba(75, 192, 192, 0.7)'
+          ],
+          borderColor: [
+            'rgb(255, 99, 132)',
+            'rgb(54, 162, 235)',
+            'rgb(255, 206, 86)',
+            'rgb(75, 192, 192)'
+          ],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: { 
+          y: { 
+            beginAtZero: true,
+            title: { display: true, text: 'Value' }
+          }
+        },
+        plugins: { legend: { display: false } }
+      }
+    });
+  }
+
+  function updateCostChart(values) {
+    const costCtx = document.getElementById('chartCosts').getContext('2d');
+    const labels = ['Pipe Cost', 'Pump Cost', 'Fittings Cost', 'Installation', 'Annual Energy'];
+    
+    if (costChart) costChart.destroy();
+    
+    costChart = new Chart(costCtx, {
+      type: 'pie',
+      data: {
+        labels,
+        datasets: [{
+          data: values,
+          backgroundColor: [
+            'rgba(54, 162, 235, 0.7)',
+            'rgba(255, 99, 132, 0.7)',
+            'rgba(75, 192, 192, 0.7)',
+            'rgba(255, 206, 86, 0.7)',
+            'rgba(153, 102, 255, 0.7)'
+          ],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: 'bottom' },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                return `${context.label}: $${context.raw.toFixed(0)}`;
+              }
+            }
+          }
+        }
+      }
+    });
+  }
+
+  function updateTradeoffChart(data) {
+    const tradeoffCtx = document.getElementById('chartTradeoff').getContext('2d');
+    
+    const velocities = data.map(d => d.targetV);
+    const pipeCosts = data.map(d => d.pipeCapex);
+    const annualCosts = data.map(d => d.opex_yearly);
+    const lifecycleCosts = data.map(d => d.totalCapex + d.opex_yearly * 10);
+    
+    if (tradeoffChart) tradeoffChart.destroy();
+    
+    tradeoffChart = new Chart(tradeoffCtx, {
+      type: 'line',
+      data: {
+        labels: velocities.map(v => v.toFixed(1)),
+        datasets: [
+          {
+            label: 'Pipe Cost ($)',
+            data: pipeCosts,
+            borderColor: 'rgb(54, 162, 235)',
+            backgroundColor: 'rgba(54, 162, 235, 0.1)',
+            yAxisID: 'y',
+            tension: 0.3
+          },
+          {
+            label: 'Annual Energy Cost ($)',
+            data: annualCosts,
+            borderColor: 'rgb(255, 99, 132)',
+            backgroundColor: 'rgba(255, 99, 132, 0.1)',
+            yAxisID: 'y',
+            tension: 0.3
+          },
+          {
+            label: '10-Year Total Cost ($)',
+            data: lifecycleCosts,
+            borderColor: 'rgb(75, 192, 192)',
+            backgroundColor: 'rgba(75, 192, 192, 0.1)',
+            yAxisID: 'y',
+            tension: 0.3
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        interaction: { mode: 'index', intersect: false },
+        scales: {
+          x: { title: { display: true, text: 'Target Velocity (m/s)' } },
+          y: { type: 'linear', display: true, position: 'left', title: { display: true, text: 'Cost ($)' } }
+        },
+        plugins: {
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                return `${context.dataset.label}: $${context.raw.toFixed(0)}`;
+              }
+            }
+          }
+        }
+      }
+    });
+  }
+
+  // ====== THREE.JS 3D Visualization ======
+  const threeContainer = document.getElementById('threeContainer');
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(60, threeContainer.clientWidth / threeContainer.clientHeight, 0.1, 2000);
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  renderer.setSize(threeContainer.clientWidth, threeContainer.clientHeight);
+  renderer.setPixelRatio(window.devicePixelRatio ? window.devicePixelRatio : 1);
+  threeContainer.appendChild(renderer.domElement);
+
+  // Lights
+  const ambient = new THREE.AmbientLight(0xffffff, 0.7);
+  scene.add(ambient);
+  const dir = new THREE.DirectionalLight(0xffffff, 0.8);
+  dir.position.set(5,10,7);
+  scene.add(dir);
+
+  // Ground
+  const planeGeo = new THREE.PlaneGeometry(60, 20);
+  const planeMat = new THREE.MeshStandardMaterial({ color: 0xe8f4ff, side: THREE.DoubleSide });
+  const plane = new THREE.Mesh(planeGeo, planeMat);
+  plane.rotation.x = Math.PI / 2;
+  plane.position.y = -2.5;
+  scene.add(plane);
+
+  // Pump
+  let pumpMesh = null;
+  function createPump() {
+    if (pumpMesh) { 
+      scene.remove(pumpMesh); 
+      if (pumpMesh.geometry) pumpMesh.geometry.dispose(); 
+      if (pumpMesh.material) pumpMesh.material.dispose(); 
+    }
+    
+    const pumpBase = new THREE.CylinderGeometry(1.5, 1.5, 2, 16);
+    const pumpTop = new THREE.SphereGeometry(1.8, 16, 16);
+    const pumpMat = new THREE.MeshStandardMaterial({ color: 0x333333 });
+    
+    const base = new THREE.Mesh(pumpBase, pumpMat);
+    const top = new THREE.Mesh(pumpTop, pumpMat);
+    top.position.y = 1.8;
+    
+    pumpMesh = new THREE.Group();
+    pumpMesh.add(base);
+    pumpMesh.add(top);
+    pumpMesh.position.set(-15, 0, 0);
+    pumpMesh.scale.set(0.8, 0.8, 0.8);
+    scene.add(pumpMesh);
+  }
+
+  // Pipe
+  let pipeMesh = null;
+  function createPipeMesh(D) {
+    if (pipeMesh) { 
+      scene.remove(pipeMesh); 
+      if (pipeMesh.geometry) pipeMesh.geometry.dispose(); 
+      if (pipeMesh.material) pipeMesh.material.dispose(); 
+    }
+    
+    const radius = Math.max(0.01, D * 15);
+    const length = 30;
+    const geo = new THREE.CylinderGeometry(radius, radius, length, 32, 1, true);
+    const mat = new THREE.MeshStandardMaterial({ 
+      color: 0x0077c2, 
+      transparent: true, 
+      opacity: 0.85, 
+      side: THREE.DoubleSide 
+    });
+    
+    pipeMesh = new THREE.Mesh(geo, mat);
+    pipeMesh.rotation.z = Math.PI / 2;
+    pipeMesh.position.y = 0;
+    scene.add(pipeMesh);
+
+    // Inner flow
+    const innerRadius = Math.max(0.001, radius * 0.85);
+    const inner = new THREE.CylinderGeometry(innerRadius, innerRadius, length, 24);
+    const innerMat = new THREE.MeshBasicMaterial({ 
+      color: 0x66ccff, 
+      transparent: true, 
+      opacity: 0.5 
+    });
+    
+    const innerMesh = new THREE.Mesh(inner, innerMat);
+    innerMesh.rotation.z = Math.PI / 2;
+    innerMesh.position.y = 0;
+    scene.add(innerMesh);
+    
+    // Flow arrows
+    const arrowCount = 5;
+    for (let i = 0; i < arrowCount; i++) {
+      const arrow = new THREE.ConeGeometry(0.3, 1, 8);
+      const arrowMat = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+      const arrowMesh = new THREE.Mesh(arrow, arrowMat);
+      
+      const pos = -length/2 + (i + 1) * (length / (arrowCount + 1));
+      arrowMesh.position.set(pos, 0, 0);
+      arrowMesh.rotation.z = -Math.PI / 2;
+      arrowMesh.scale.set(0.5, 0.5, 0.5);
+      scene.add(arrowMesh);
+    }
+    
+    // Add fittings visualization (small spheres along pipe)
+    const totalFittings = userFittings.reduce((sum, f) => sum + f.quantity, 0);
+    if (totalFittings > 0) {
+      for (let i = 0; i < Math.min(totalFittings, 10); i++) {
+        const fitting = new THREE.SphereGeometry(radius * 1.2, 8, 8);
+        const fittingMat = new THREE.MeshBasicMaterial({ color: 0xff6600 });
+        const fittingMesh = new THREE.Mesh(fitting, fittingMat);
+        
+        const pos = -length/2 + (i + 1) * (length / (Math.min(totalFittings, 10) + 1));
+        fittingMesh.position.set(pos, 0, 0);
+        fittingMesh.scale.set(1, 1, 1);
+        scene.add(fittingMesh);
+      }
+    }
+  }
+
+  // Initial setup
+  createPump();
+  createPipeMesh(currentDiameter);
+
+  camera.position.set(0, 10, 35);
+  let lastTime = 0;
+  function renderLoop(time) {
+    const t = time * 0.001;
+    scene.rotation.y = Math.sin(t * 0.1) * 0.1;
+    renderer.render(scene, camera);
+    lastTime = time;
+    requestAnimationFrame(renderLoop);
+  }
+  requestAnimationFrame(renderLoop);
+
+  function resizeThree() {
+    const w = threeContainer.clientWidth;
+    const h = threeContainer.clientHeight;
+    renderer.setSize(w, h);
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+  }
+  window.addEventListener('resize', resizeThree);
+
+  function update3DPipe(D) { 
+    createPipeMesh(D); 
+    resizeThree(); 
+  }
+
+  // ====== Tab Switching ======
+  function switchTab(tabId) {
+    document.querySelectorAll('.tab-content').forEach(tab => {
+      tab.classList.remove('active');
+    });
+    document.getElementById(tabId).classList.add('active');
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.classList.remove('active');
+    });
+    event.target.classList.add('active');
+  }
+
+  // ====== Notification System ======
+  function showNotification(message) {
+    const notification = el('notification');
+    notification.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
+    notification.style.display = 'block';
+    setTimeout(() => {
+      notification.style.display = 'none';
+    }, 3000);
+  }
+
+  // ====== Event Listeners ======
+  document.getElementById('calcBtn').addEventListener('click', calculateAll);
+  document.getElementById('compareBtn').addEventListener('click', runDiameterComparison);
+  document.getElementById('runComparison').addEventListener('click', runDiameterComparison);
+  document.getElementById('runOptimization').addEventListener('click', runOptimization);
+  document.getElementById('optimizeBtn').addEventListener('click', runOptimization);
+  document.getElementById('addFittingBtn').addEventListener('click', addFitting);
+  document.getElementById('resetFittingsBtn').addEventListener('click', resetFittingsToDefaults);
+  document.getElementById('autoLowRange').addEventListener('click', () => autoGenerateVelocityRange(0.5, 2.0, 0.5));
+  document.getElementById('autoMediumRange').addEventListener('click', () => autoGenerateVelocityRange(1.0, 3.0, 0.5));
+  document.getElementById('autoHighRange').addEventListener('click', () => autoGenerateVelocityRange(2.0, 5.0, 0.5));
+
+  // Update calculated diameter when inputs change
+  targetVelocityEl.addEventListener('input', updateCalculatedDiameter);
+  flowEl.addEventListener('input', updateCalculatedDiameter);
+
+  // Update fittings when inputs change
+  document.addEventListener('input', function(e) {
+    if (e.target.classList.contains('fitting-quantity') || e.target.classList.contains('fitting-K')) {
+      updateTotalMinorK();
+    }
+  });
+
+  // Auto-update when key parameters change
+  flowEl.addEventListener('input', function() {
+    updateSubtitle();
+    updateCalculatedDiameter();
+    // Auto-recalculate after a delay
+    clearTimeout(window.flowTimeout);
+    window.flowTimeout = setTimeout(calculateAll, 1000);
+  });
+
+  lengthEl.addEventListener('input', function() {
+    updateSubtitle();
+    clearTimeout(window.lengthTimeout);
+    window.lengthTimeout = setTimeout(calculateAll, 1000);
+  });
+
+  elevEl.addEventListener('input', function() {
+    updateSubtitle();
+    clearTimeout(window.elevTimeout);
+    window.elevTimeout = setTimeout(calculateAll, 1000);
+  });
+
+  function updateSubtitle() {
+    const flow = parseNum(flowEl.value) || 50;
+    const length = parseNum(lengthEl.value) || 200;
+    const elev = parseNum(elevEl.value) || 15;
+    subtitleEl.textContent = `Industrial Fluid Transport System: ${flow} m³/h over ${length}m with ${elev}m elevation`;
+  }
+
+  pipeMaterialEl.addEventListener('change', function() {
+    const material = materialProperties[this.value] || materialProperties.steel;
+    roughnessEl.value = material.roughness;
+    pipecostEl.value = material.cost;
+  });
+
+  effEl.addEventListener('input', function() {
+    const value = parseFloat(this.value) || 75;
+    const pumpEfficiencyBarEl = el('pumpEfficiencyBar');
+    if (pumpEfficiencyBarEl) {
+      pumpEfficiencyBarEl.style.width = `${Math.min(100, Math.max(0, value))}%`;
+    }
+  });
+
+  targetVelocityEl.addEventListener('input', function() {
+    updateCalculatedDiameter();
+    try {
+      const res = computeHydraulics();
+      updateEfficiencyIndicators(res);
+    } catch (e) {
+      // Ignore errors during typing
+    }
+  });
+
+  // ====== Initialization ======
+  function initializeDashboard() {
+    // Initialize fittings table
+    initializeFittingsTable();
+    
+    // Initialize calculated diameter
+    updateCalculatedDiameter();
+    
+    // Initialize charts
+    updateBarChart([0, 0, 0, 0]);
+    updateCostChart([0, 0, 0, 0, 0]);
+    
+    // Run initial calculation
+    try { 
+      calculateAll(); 
+    } catch(e){ 
+      console.log("Initial calculation deferred:", e);
+    }
+    
+    // Initialize tradeoff chart
+    const tradeoffCtx = document.getElementById('chartTradeoff').getContext('2d');
+    tradeoffChart = new Chart(tradeoffCtx, {
+      type: 'line',
+      data: {
+        labels: ['1.0', '1.5', '2.0', '2.5', '3.0', '4.0', '5.0'],
+        datasets: [
+          {
+            label: 'Pipe Cost ($)',
+            data: [9000, 6000, 4500, 3600, 3000, 2250, 1800],
+            borderColor: 'rgb(54, 162, 235)',
+            backgroundColor: 'rgba(54, 162, 235, 0.1)',
+            tension: 0.3
+          },
+          {
+            label: 'Annual Energy Cost ($)',
+            data: [2000, 2800, 3500, 4500, 5500, 8000, 12000],
+            borderColor: 'rgb(255, 99, 132)',
+            backgroundColor: 'rgba(255, 99, 132, 0.1)',
+            tension: 0.3
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          x: { title: { display: true, text: 'Target Velocity (m/s)' } },
+          y: { title: { display: true, text: 'Cost ($)' } }
+        }
+      }
+    });
+  }
+
+  // Initialize when page loads
+  window.addEventListener('DOMContentLoaded', initializeDashboard);
+</script>
+
+</body>
+</html>
